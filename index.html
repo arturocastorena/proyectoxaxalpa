@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto de Accesibilidad: Calle Xaxalpa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals (Oat, Stone, Slate, Muted Indigo) -->
+    <!-- Application Structure Plan: Se ha diseñado una aplicación de una sola página (SPA) con una estructura de navegación superior fija que se desplaza suavemente a las diferentes secciones. Este enfoque de "narrativa guiada" fue elegido sobre una estructura de múltiples páginas para llevar al usuario a través de una historia coherente: comienza con un resumen de alto impacto (Inicio), profundiza en la razón del proyecto (El Problema y la Solución), detalla la ejecución (Plan de Acción), analiza los recursos (Presupuesto y Equipo), evalúa los resultados potenciales (Impacto y Riesgos) y finaliza con un llamado a la acción (Contacto). Esta estructura facilita una comprensión más rápida y atractiva que simplemente replicar el orden de los informes originales. -->
+    <!-- Visualization & Content Choices: 
+        - Inicio: [Info: Familias impactadas, Duración] -> [Goal: Informar/Impactar] -> [Method: Tarjetas de estadísticas con texto grande] -> [Interaction: Estático] -> [Justification: Captura la atención inmediatamente con datos clave].
+        - El Problema y la Solución: [Info: Descripción del problema, Beneficios] -> [Goal: Comparar/Contextualizar] -> [Method: Columnas lado a lado con iconos Unicode] -> [Interaction: Estático] -> [Justification: Contraste visual claro entre el "antes" y el "después" conceptual].
+        - Plan de Acción (Gantt): [Info: Fases, Tareas, Duraciones] -> [Goal: Mostrar cambio/Organizar] -> [Method: Gráfico de barras horizontales (Gantt) con Chart.js] -> [Interaction: Hover para Tooltips] -> [Justification: Visualiza el cronograma del proyecto de forma clara y profesional, mostrando dependencias y plazos].
+        - Presupuesto y Equipo: [Info: Costos de Materiales/Mano de Obra, Roles del equipo] -> [Goal: Mostrar proporciones/Informar] -> [Method: Gráfico de Donut con Chart.js y tarjetas de perfil] -> [Interaction: Hover en gráfico] -> [Justification: Simplifica la distribución financiera compleja y presenta al equipo humano de forma accesible].
+        - Impacto y Riesgos: [Info: Escenarios mejores/peores] -> [Goal: Comparar/Informar] -> [Method: Acordeón interactivo para mostrar/ocultar escenarios] -> [Interaction: Clic para expandir] -> [Justification: Permite al usuario explorar los riesgos sin saturar la pantalla, fomentando la interacción].
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 400px; max-height: 50vh; }
+        @media (min-width: 768px) { .chart-container { height: 500px; } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="font-bold text-lg text-indigo-800">Proyecto Xaxalpa</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#inicio" class="text-slate-600 hover:text-indigo-600 transition-colors">Inicio</a>
+                <a href="#problema" class="text-slate-600 hover:text-indigo-600 transition-colors">El Proyecto</a>
+                <a href="#plan" class="text-slate-600 hover:text-indigo-600 transition-colors">Plan de Acción</a>
+                <a href="#recursos" class="text-slate-600 hover:text-indigo-600 transition-colors">Recursos</a>
+                <a href="#impacto" class="text-slate-600 hover:text-indigo-600 transition-colors">Impacto</a>
+                <a href="#contacto" class="text-slate-600 hover:text-indigo-600 transition-colors">Contacto</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-slate-600 hover:bg-slate-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
+            <a href="#inicio" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Inicio</a>
+            <a href="#problema" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">El Proyecto</a>
+            <a href="#plan" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Plan de Acción</a>
+            <a href="#recursos" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Recursos</a>
+            <a href="#impacto" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Impacto</a>
+            <a href="#contacto" class="block py-2 px-6 text-slate-600 hover:bg-slate-50">Contacto</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="inicio" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight">
+                    Un Proyecto para la Movilidad Inclusiva
+                </h2>
+                <p class="mt-6 max-w-3xl mx-auto text-lg text-slate-600">
+                    Facilitando el tránsito seguro y accesible en nuestra comunidad de la Calle Xaxalpa para todos los vecinos, especialmente aquellos con movilidad reducida.
+                </p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-slate-100 p-8 rounded-xl shadow-sm">
+                        <p class="text-4xl font-bold text-indigo-600">380+</p>
+                        <p class="mt-2 text-slate-700 font-medium">Familias Beneficiadas</p>
+                    </div>
+                    <div class="bg-slate-100 p-8 rounded-xl shadow-sm">
+                        <p class="text-4xl font-bold text-indigo-600">17 Días</p>
+                        <p class="mt-2 text-slate-700 font-medium">Duración de la Obra</p>
+                    </div>
+                    <div class="bg-slate-100 p-8 rounded-xl shadow-sm">
+                        <p class="text-4xl font-bold text-indigo-600">100%</p>
+                        <p class="mt-2 text-slate-700 font-medium">Enfoque Comunitario</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="problema" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-900">El Problema y Nuestra Solución</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-slate-600">Este proyecto aborda una necesidad crítica en nuestra comunidad, transformando un entorno riesgoso en un espacio seguro y accesible para todos. A continuación, detallamos la situación actual y los beneficios directos que traerá nuestra iniciativa.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-start">
+                    <div class="bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                        <h4 class="text-2xl font-bold text-slate-800 flex items-center"><span class="text-3xl mr-3">⚠️</span> El Problema: Un Entorno Inseguro</h4>
+                        <p class="mt-4 text-slate-600">La Calle Xaxalpa, en la alcaldía Álvaro Obregón, presenta un terreno irregular con escalones sin apoyo. En épocas de lluvia, el concreto se vuelve resbaladizo, representando un riesgo significativo para la seguridad de sus habitantes, afectando gravemente a adultos mayores y personas con discapacidad motriz o visual.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                        <h4 class="text-2xl font-bold text-slate-800 flex items-center"><span class="text-3xl mr-3">✅</span> La Solución: Acciones Concretas</h4>
+                        <ul class="mt-4 space-y-3 text-slate-600">
+                            <li><strong class="text-indigo-700">Seguridad y Salud:</strong> Instalación de pasamanos y rampas para reducir drásticamente el riesgo de caídas y fomentar la movilidad independiente.</li>
+                            <li><strong class="text-indigo-700">Ahorro Económico:</strong> Facilita el uso de atajos peatonales, evitando gastos en transporte privado.</li>
+                            <li><strong class="text-indigo-700">Inclusión Social:</strong> Garantiza el derecho a la movilidad sin restricciones, permitiendo la participación activa en la vida comunitaria.</li>
+                            <li><strong class="text-indigo-700">Bienestar Comunitario:</strong> Fomenta la colaboración entre vecinos para un beneficio mutuo y duradero.</li>
+                        </ul>
+                    </div>
+                </div>
+                 <div class="mt-12 bg-indigo-50 p-8 rounded-lg border border-indigo-200">
+                    <h4 class="text-xl font-bold text-indigo-900">Objetivo General del Proyecto</h4>
+                    <p class="mt-2 text-indigo-800">Realizar una mejora integral en los accesos de nuestra comunidad para garantizar el libre tránsito de todos, facilitando especialmente el desplazamiento de personas con dificultad de movimiento. Buscamos completar este proyecto en un periodo de 5 meses, con el apoyo de ciudadanos y autoridades.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="plan" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-900">Plan de Acción</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-slate-600">La ejecución del proyecto está organizada en tres fases claras, con un cronograma definido para garantizar la eficiencia y el control. A continuación, se muestra el diagrama de Gantt que guía nuestras actividades del 07 al 23 de julio de 2025.</p>
+                </div>
+                <div class="chart-container bg-slate-50 p-4 rounded-lg shadow-inner">
+                    <canvas id="ganttChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section id="recursos" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h3 class="text-3xl font-bold text-slate-900">Presupuesto y Equipo</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-slate-600">El éxito de este proyecto depende tanto de una gestión financiera transparente como de un equipo humano comprometido y capacitado. Aquí presentamos la distribución de los recursos.</p>
+                </div>
+                <div class="grid md:grid-cols-5 gap-8 items-center">
+                    <div class="md:col-span-2">
+                         <div class="chart-container" style="height:350px; max-height:40vh;">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="md:col-span-3">
+                        <h4 class="text-2xl font-bold text-slate-800 mb-6">Nuestro Equipo</h4>
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                                <span class="text-2xl bg-indigo-100 text-indigo-700 rounded-full h-12 w-12 flex items-center justify-center mr-4">💼</span>
+                                <div>
+                                    <h5 class="font-bold">Director/a del Proyecto</h5>
+                                    <p class="text-sm text-slate-600">Coordina, distribuye funciones y supervisa la calidad.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                                <span class="text-2xl bg-indigo-100 text-indigo-700 rounded-full h-12 w-12 flex items-center justify-center mr-4">🧱</span>
+                                <div>
+                                    <h5 class="font-bold">Albañil</h5>
+                                    <p class="text-sm text-slate-600">Construye rampas y realiza trabajos de cimentación y mampostería.</p>
+                                </div>
+                            </div>
+                             <div class="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                                <span class="text-2xl bg-indigo-100 text-indigo-700 rounded-full h-12 w-12 flex items-center justify-center mr-4">🛠️</span>
+                                <div>
+                                    <h5 class="font-bold">Técnico Soldador</h5>
+                                    <p class="text-sm text-slate-600">Realiza cortes, solda y pule los pasamanos y estructuras.</p>
+                                </div>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg shadow-sm flex items-center">
+                                <span class="text-2xl bg-indigo-100 text-indigo-700 rounded-full h-12 w-12 flex items-center justify-center mr-4">👷</span>
+                                <div>
+                                    <h5 class="font-bold">Ayudantes Generales</h5>
+                                    <p class="text-sm text-slate-600">Apoyan en diversas tareas y en la limpieza general del área.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impacto" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                 <div class="text-center mb-12">
+                    <h3 class="text-3xl font-bold text-slate-900">Impacto, Riesgos y Estándares</h3>
+                    <p class="mt-4 max-w-2xl mx-auto text-slate-600">Evaluamos tanto los resultados positivos que esperamos como los posibles desafíos. La transparencia y la planificación nos permiten maximizar el impacto y mitigar los riesgos.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-xl font-bold mb-4">Análisis de Escenarios</h4>
+                        <div id="accordion" class="space-y-2">
+                             <div class="border border-slate-200 rounded-lg">
+                                <button class="accordion-header w-full flex justify-between items-center p-4 bg-slate-50 hover:bg-slate-100 transition-colors">
+                                    <span class="font-medium text-slate-800">El Mejor Escenario</span>
+                                    <span class="accordion-icon text-indigo-600 font-bold text-xl">+</span>
+                                </button>
+                                <div class="accordion-content hidden p-4 border-t border-slate-200">
+                                    <p class="text-slate-600">Todos los trabajos se realizan en tiempo y forma, con excelente calidad y con el apoyo total de la comunidad y las autoridades. Se mantiene una comunicación fluida y la motivación es alta.</p>
+                                </div>
+                            </div>
+                             <div class="border border-slate-200 rounded-lg">
+                                <button class="accordion-header w-full flex justify-between items-center p-4 bg-slate-50 hover:bg-slate-100 transition-colors">
+                                    <span class="font-medium text-slate-800">El Peor Escenario</span>
+                                    <span class="accordion-icon text-indigo-600 font-bold text-xl">+</span>
+                                </button>
+                                <div class="accordion-content hidden p-4 border-t border-slate-200">
+                                    <p class="text-slate-600">Poca empatía o falta de apoyo de la comunidad, un costo elevado e imprevisto de los materiales que afecte el presupuesto, o mano de obra que no cumpla con los estándares de calidad, retrasando el proyecto.</p>
+                                    <p class="mt-2 text-sm text-indigo-700 font-medium"><strong>Solución:</strong> Mantener comunicación constante con los vecinos, tener un fondo de contingencia y buscar proveedores alternativos. Supervisar de cerca la calidad del trabajo.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div>
+                        <h4 class="text-xl font-bold mb-4">Estándares de Calidad</h4>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                           <li>Cumplimiento estricto de los tiempos establecidos.</li>
+                           <li>Calidad estética y funcional en herrería y albañilería.</li>
+                           <li>Contratación de personal calificado y con experiencia.</li>
+                           <li>Durabilidad de materiales e instalaciones.</li>
+                           <li>Cumplimiento de normas de seguridad (ej. NOM-031-STPS-2011).</li>
+                           <li>Limpieza del área de trabajo durante y al final de la obra.</li>
+                           <li>Transparencia total en el uso de recursos.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="py-20 bg-slate-800 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h3 class="text-3xl font-bold">Involúcrate</h3>
+                <p class="mt-4 max-w-2xl mx-auto text-slate-300">Este es un proyecto de y para la comunidad. Si tienes preguntas, sugerencias o deseas apoyar, no dudes en contactarnos.</p>
+                <div class="mt-8">
+                     <a href="mailto:arturo.castorena@email.com" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-lg transition-colors">
+                        Contactar por Correo
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-slate-900 text-slate-400 py-6">
+        <div class="container mx-auto px-6 text-center text-sm">
+            <p>&copy; 2025 Proyecto de Accesibilidad Calle Xaxalpa. Creado por Arturo Castorena Leal.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const navLinks = document.querySelectorAll('#mobile-menu a, header nav a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const ganttData = {
+                labels: [
+                    'Plan de mejoras', 
+                    'Junta vecinal', 
+                    'Limpieza de lugar', 
+                    'Cotizar Material', 
+                    'Compra de material',
+                    'Trazos y mediciones',
+                    'Huecos en concreto',
+                    'Colocar tubos',
+                    'Fijar tuberías',
+                    'Fabricar pasamanos',
+                    'Pulir soldaduras',
+                    'Lijar y pintar tubos'
+                ],
+                datasets: [{
+                    label: 'Duración de Tareas (Julio 2025)',
+                    data: [
+                        [new Date('2025-07-07'), new Date('2025-07-08')],
+                        [new Date('2025-07-08'), new Date('2025-07-09')],
+                        [new Date('2025-07-09'), new Date('2025-07-11')],
+                        [new Date('2025-07-10'), new Date('2025-07-11')],
+                        [new Date('2025-07-11'), new Date('2025-07-12')],
+                        [new Date('2025-07-14'), new Date('2025-07-17')],
+                        [new Date('2025-07-14'), new Date('2025-07-17')],
+                        [new Date('2025-07-16'), new Date('2025-07-19')],
+                        [new Date('2025-07-17'), new Date('2025-07-22')],
+                        [new Date('2025-07-17'), new Date('2025-07-22')],
+                        [new Date('2025-07-21'), new Date('2025-07-23')],
+                        [new Date('2025-07-22'), new Date('2025-07-24')],
+                    ],
+                    backgroundColor: [
+                        '#818cf8', '#a78bfa', '#a78bfa', '#facc15', '#fb923c', 
+                        '#34d399', '#34d399', '#22d3ee', '#22d3ee', '#22d3ee',
+                        '#fb7185', '#fb7185'
+                    ],
+                    barPercentage: 0.7,
+                    categoryPercentage: 0.8
+                }]
+            };
+
+            const ganttConfig = {
+                type: 'bar',
+                data: ganttData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const
+                                     startDate = new Date(context.raw[0]).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+                                    const endDate = new Date(context.raw[1]).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+                                    return `${context.dataset.label}: ${startDate} - ${endDate}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            min: new Date('2025-07-07').valueOf(),
+                            max: new Date('2025-07-24').valueOf(),
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'dd MMM'
+                                }
+                            },
+                             grid: {
+                                color: 'rgba(203, 213, 225, 0.5)'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            };
+            
+            const ganttCtx = document.getElementById('ganttChart').getContext('2d');
+            new Chart(ganttCtx, ganttConfig);
+
+
+            const budgetData = {
+                labels: ['Materiales', 'Mano de Obra'],
+                datasets: [{
+                    data: [63135, 7400],
+                    backgroundColor: ['#4f46e5', '#a78bfa'],
+                    hoverBackgroundColor: ['#4338ca', '#8b5cf6'],
+                    borderWidth: 0,
+                }]
+            };
+
+            const budgetConfig = {
+                type: 'doughnut',
+                data: budgetData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(context.parsed);
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Distribución de Costos Totales',
+                            font: { size: 16 }
+                        }
+                    },
+                    cutout: '60%',
+                }
+            };
+
+            const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+            new Chart(budgetCtx, budgetConfig);
+            
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const content = header.nextElementSibling;
+                    const icon = header.querySelector('.accordion-icon');
+                    
+                    if (content.classList.contains('hidden')) {
+                        content.classList.remove('hidden');
+                        icon.textContent = '-';
+                    } else {
+                        content.classList.add('hidden');
+                        icon.textContent = '+';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
